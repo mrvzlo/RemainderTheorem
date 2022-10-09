@@ -1,4 +1,9 @@
-﻿var file = File.ReadAllLines("ieeja.txt");
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+var file = File.ReadAllLines("ieeja.txt");
 var count = int.Parse(file[0]);
 var divisors = file[1].Split(';').Select(int.Parse).ToList();
 var remainders = file[2].Split(';').Select(int.Parse).ToList();
@@ -13,35 +18,31 @@ var parts = new List<long>();
 for (var i = 0; i < count; i++)
 {
     var primal = max / divisors[i];
-    var uv = EuclideanAlgo(primal, divisors[i]);
-    var reverse = uv.Item1;
+    var reverse = GetReverse(primal, divisors[i]);
     parts.Add(remainders[i] * reverse * primal % max);
 }
 
 var sum = parts.Sum() % max;
 if (sum < 0) sum += max;
 Console.WriteLine("Answer is " + sum);
-
-long t1 = 19;
-long t2 = 7;
-var uv2 = EuclideanAlgo(t1, t2);
-Console.WriteLine("EuclideanAlgo is " + uv2);
-Console.WriteLine("EuclideanAlgo is " + (t1 * uv2.Item1 + t2 * uv2.Item2));
 Console.ReadLine();
 
-(long, long) EuclideanAlgo(long a, long b)
+long GetReverse(long a, long b)
 {
+    long s = 0;
     long u = 1;
-    long v = 1;
-    while (b > 0)
+
+    while (b != 0)
     {
-        var temp = u;
-        u = v;
-        v = temp - (a / b) * v;
-        temp = a;
-        a = b;
-        b = temp % b;
+        var quotient = a / b;
+        var temp = b;
+        b = a % b;
+        a = temp;
+
+        temp = s;
+        s = u - quotient * s;
+        u = temp;
     }
 
-    return (u, v);
+    return u;
 }
