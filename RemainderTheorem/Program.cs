@@ -5,8 +5,14 @@ using System.Linq;
 
 var file = File.ReadAllLines("ieeja.txt");
 var count = int.Parse(file[0]);
-var divisors = file[1].Split(';').Select(int.Parse).ToList();
-var remainders = file[2].Split(';').Select(int.Parse).ToList();
+var divisors = new List<int>();
+var remainders = new List<int>();
+for (var i = 0; i < count; i++)
+{
+    divisors.Add(int.Parse(file[i + 1]));
+    remainders.Add(int.Parse(file[i + 1 + count]));
+}
+
 var max = divisors.Aggregate(1, (a, b) => a * b);
 if (max == 0)
 {
